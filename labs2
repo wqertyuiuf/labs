@@ -1,0 +1,109 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
+class Program
+{
+    static void Main(string[] args)
+    {
+        while (true)
+        {
+            Console.WriteLine("Выберите операцию:");
+            Console.WriteLine("1. Проверка email-адреса или номера телефона");
+            Console.WriteLine("2. Поиск всех дат в формате dd.MM.yyyy");
+            Console.WriteLine("3. Замена всех цифр в тексте на *");
+            Console.WriteLine("4. Разбиение строки по запятым, точкам или пробелам");
+            Console.WriteLine("5. Выход");
+            Console.Write("Введите номер операции: ");
+            var choice = Console.ReadLine();
+            switch (choice)
+            {
+                case "1":
+                    CheckEmailOrPhone();
+                    break;
+                case "2":
+                    FindDates();
+                    break;
+                case "3":
+                    ReplaceDigits();
+                    break;
+                case "4":
+                    SplitString();
+                    break;
+                case "5":
+                    return;
+                default:
+                    Console.WriteLine("Неверный выбор. Попробуйте еще раз.");
+                    break;
+            }
+        }
+    }
+    static void CheckEmailOrPhone()
+    {
+        Console.Write("Введите email-адрес или номер телефона: ");
+        string input = Console.ReadLine();
+        if (IsValidEmail(input))
+        {
+            Console.WriteLine("Это корректный email-адрес.");
+        }
+        else if (IsValidPhoneNumber(input))
+        {
+            Console.WriteLine("Это корректный номер телефона.");
+        }
+        else
+        {
+            Console.WriteLine("Некорректный ввод.");
+        }
+    }
+    static bool IsValidEmail(string email)
+    {
+        var emailPattern = @"^[^@s]+@[^@s]+.[^@s]+$";
+        return Regex.IsMatch(email, emailPattern);
+    }
+    static bool IsValidPhoneNumber(string phone)
+    {
+        var phonePattern = @"^+?[0-9s-()]{7,15}$"; // Простой паттерн для телефона
+        return Regex.IsMatch(phone, phonePattern);
+    }
+    static void FindDates()
+    {
+        Console.Write("Введите текст для поиска дат (формат dd.MM.yyyy): ");
+        string input = Console.ReadLine();
+        var datePattern = @"\bd{2}.d{2}.d{4}\b";
+        var matches = Regex.Matches(input, datePattern);
+        if (matches.Count > 0)
+        {
+            Console.WriteLine("Найденные даты:");
+            foreach (Match match in matches)
+            {
+                Console.WriteLine(match.Value);
+            }
+        }
+        else
+        {
+            Console.WriteLine("Даты не найдены.");
+        }
+    }
+
+    static void ReplaceDigits()
+    {
+        Console.Write("Введите текст: ");
+        string input = Console.ReadLine();
+        string result = Regex.Replace(input, @"d", "*");
+        
+        Console.WriteLine("Результат замены цифр на *: " + result);
+    }
+    static void SplitString()
+    {
+        Console.Write("Введите строку для разбиения: ");
+        string input = Console.ReadLine();
+        var separators = new char[] { ',', '.', ' ' };
+        var parts = input.Split(separators, StringSplitOptions.RemoveEmptyEntries);
+
+        Console.WriteLine("Результат разбиения:");
+        foreach (var part in parts)
+        {
+            Console.WriteLine(part);
+        }
+    }
+}
